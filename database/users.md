@@ -1,0 +1,7 @@
+# Users Table
+
+- id
+- username
+- email
+- password
+- created_at

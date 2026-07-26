@@ -1,6 +1,6 @@
-let score = 0;
+let clicks = 0;
 
-document.getElementById("clickBtn").addEventListener("click", function () {
-    score++;
-    document.getElementById("score").textContent = score;
-});
+function clickGame() {
+    clicks++;
+    document.getElementById("clicks").innerText = "Clicks: " + clicks;
+}

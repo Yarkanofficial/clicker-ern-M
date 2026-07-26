@@ -1,11 +1,28 @@
+import { db } from "./firebase.js";
+import {
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
 let clicks = Number(localStorage.getItem("clicks")) || 0;
 
 document.getElementById("clicks").innerText = "Clicks: " + clicks;
 
-function clickGame() {
+async function clickGame() {
     clicks++;
+
     document.getElementById("clicks").innerText = "Clicks: " + clicks;
+
     localStorage.setItem("clicks", clicks);
+
+    try {
+        await addDoc(collection(db, "clicks"), {
+            clicks: clicks,
+            time: new Date()
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // 24-hour timer

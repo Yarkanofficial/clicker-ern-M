@@ -1,54 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClickArena M</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClickArena M</title>
 
-<link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
-<h2>Register</h2>
-
-<input type="email" id="email" placeholder="Email">
-<br><br>
-
-<input type="password" id="password" placeholder="Password">
-<br><br>
-
-<button id="registerBtn">Register</button>
-
-<p id="message"></p>>
+<body>
 
 <div class="container">
 
-<h1>🎮 ClickArena M</h1>
+  <h1>🎮 ClickArena M</h1>
 
-<p>Click as fast as you can!</p>
+  <h2>Register</h2>
 
-<h2 id="clicks">Clicks: 0</h2>
+  <input type="email" id="email" placeholder="Email">
+  <br><br>
 
-<h3 id="timer">⏰ 24:00:00</h3>
+  <input type="password" id="password" placeholder="Password">
+  <br><br>
 
-<button onclick="clickGame()">
-🔥 CLICK 🔥
-</button>
+  <button id="registerBtn">Register</button>
 
-<br><br>
+  <p id="message"></p>
 
-<button onclick="location.href='leaderboard.html'">
-🏆 Leaderboard
-</button>
+  <hr>
 
-<br><br>
+  <p>Click as fast as you can!</p>
 
-<button onclick="location.href='home.html'">
-🏠 Home
-</button>
+  <h2 id="clicks">Clicks: 0</h2>
+
+  <h3 id="timer">⏰ 24:00:00</h3>
+
+  <button onclick="clickGame()">
+    🔥 CLICK 🔥
+  </button>
+
+  <br><br>
+
+  <button onclick="location.href='leaderboard.html'">
+    🏆 Leaderboard
+  </button>
+
+  <br><br>
+
+  <button onclick="location.href='home.html'">
+    🏠 Home
+  </button>
 
 </div>
 
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>

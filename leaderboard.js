@@ -39,7 +39,11 @@ async function loadLeaderboard() {
 
   snapshot.forEach((doc) => {
 
-    players.push(doc.data());
+players.push({
+  email: doc.data().email || "Unknown",
+  coins: doc.data().coins || 0,
+  clicks: doc.data().clicks || 0
+});  
 
   });
 

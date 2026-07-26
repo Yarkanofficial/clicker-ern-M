@@ -1,54 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ClickArena M</title>
 
-  <link rel="stylesheet" href="style.css">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ClickArena M</title>
+
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="container">
 
-  <h1>🎮 ClickArena M</h1>
+<h1>🎮 ClickArena M</h1>
 
-  <h2>Register</h2>
+<p id="message"></p>
 
-  <input type="email" id="email" placeholder="Email">
-  <br><br>
+<h2>Welcome</h2>
 
-  <input type="password" id="password" placeholder="Password">
-  <br><br>
+<input
+type="email"
+id="email"
+placeholder="Enter Email">
 
-  <button id="registerBtn">Register</button>
+<br><br>
 
-  <p id="message"></p>
+<input
+type="password"
+id="password"
+placeholder="Enter Password">
 
-  <hr>
+<br><br>
 
-  <p>Click as fast as you can!</p>
+<button id="registerBtn">
+Register
+</button>
 
-  <h2 id="clicks">Clicks: 0</h2>
+<button id="loginBtn">
+Login
+</button>
 
-  <h3 id="timer">⏰ 24:00:00</h3>
+<button id="logoutBtn">
+Logout
+</button>
 
-  <button onclick="clickGame()">
-    🔥 CLICK 🔥
-  </button>
+<hr>
 
-  <br><br>
+<h2 id="clicks">
+Clicks: 0
+</h2>
 
-  <button onclick="location.href='leaderboard.html'">
-    🏆 Leaderboard
-  </button>
+<h2 id="coins">
+Coins: 0
+</h2>
 
-  <br><br>
+<h2 id="timer">
+⏰ 24:00:00
+</h2>
 
-  <button onclick="location.href='home.html'">
-    🏠 Home
-  </button>
+<button onclick="clickGame()">
+🔥 CLICK 🔥
+</button>
+
+<br><br>
+<button onclick="claimDailyPrize()">
+🎁 Daily Prize
+</button>
+
+<br><br>
+
+<button onclick="location.href='leaderboard.html'">
+🏆 Leaderboard
+</button>
+
+<br><br>
+
+<div class="wallet">
+
+<h3>
+💰 Wallet
+</h3>
+
+<p id="wallet">
+Coins: 0
+</p>
+
+</div>
 
 </div>
 

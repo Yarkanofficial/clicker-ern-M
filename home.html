@@ -13,12 +13,63 @@
 
 <h1>🎮 ClickArena M</h1>
 
-<h2>Welcome Player</h2>
+<h2>Welcome Back 👋</h2>
+
+<p>Your personal dashboard</p>
+
+<hr>
+
+<div class="card">
+<h3>👤 Player</h3>
+<p id="playerName">Guest</p>
+</div>
+
+<br>
+
+<div class="card">
+<h3>📈 Your Clicks</h3>
+<p id="clickCount">0</p>
+</div>
+
+<br>
+
+<div class="card">
+<h3>💰 Wallet</h3>
+<p>$0.00</p>
+</div>
+
+<br>
+
+<div class="card">
+<h3>🏆 Rank</h3>
+<p>#--</p>
+</div>
+
+<br>
+
+<div class="card">
+<h3>👥 Players Online</h3>
+<p>0</p>
+</div>
+
+<br>
+
+<div class="card">
+<h3>🎁 Daily Prize</h3>
+<p>$0</p>
+</div>
+
+<br>
+
+<div class="card">
+<h3>⏰ Daily Timer</h3>
+<p id="dailyTimer">24:00:00</p>
+</div>
 
 <br>
 
 <button onclick="location.href='index.html'">
-▶ Play Game
+🎮 Play Game
 </button>
 
 <br><br>
@@ -29,29 +80,18 @@
 
 <br><br>
 
-<button onclick="location.href='wallet.html'">
-💰 Wallet
-</button>
-
-<br><br>
-
-<button onclick="location.href='profile.html'">
-👤 Profile
-</button>
-
-<br><br>
-
-<button onclick="location.href='settings.html'">
-⚙ Settings
-</button>
-
-<br><br>
-
 <button onclick="location.href='login.html'">
 🚪 Logout
 </button>
 
 </div>
+
+<script>
+const clicks = localStorage.getItem("clicks") || 0;
+document.getElementById("clickCount").innerText = clicks;
+</script>
+
+<script src="script.js"></script>
 
 </body>
 </html>

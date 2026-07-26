@@ -1,114 +1,181 @@
+/* ==========================
+   ClickArena M
+   Style Part 1
+========================== */
+
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
 
 body{
-    background:#0f172a;
-    color:#fff;
-    font-family:Arial,sans-serif;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
+background:#0f172a;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
 }
 
 .container{
-    width:90%;
-    max-width:450px;
-    background:#1e293b;
-    padding:30px;
-    border-radius:20px;
-    text-align:center;
-    box-shadow:0 0 30px rgba(0,0,0,.4);
+width:100%;
+max-width:420px;
+background:#1e293b;
+padding:25px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px rgba(0,0,0,.4);
 }
 
 h1{
-    font-size:32px;
-    margin-bottom:20px;
+font-size:30px;
+margin-bottom:15px;
+color:#38bdf8;
 }
 
 h2{
-    margin:15px 0;
+margin:12px 0;
+font-size:22px;
 }
 
 p{
-    color:#cbd5e1;
-    margin-bottom:20px;
+margin:10px 0;
 }
 
 input{
-    width:100%;
-    padding:14px;
-    margin:10px 0;
-    border:none;
-    border-radius:10px;
-    background:#334155;
-    color:#fff;
-    font-size:16px;
+width:100%;
+padding:14px;
+margin:8px 0;
+border:none;
+border-radius:10px;
+font-size:16px;
+outline:none;
 }
-
-input::placeholder{
-    color:#94a3b8;
-}
-
 button{
-    width:100%;
-    padding:15px;
-    margin-top:12px;
-    border:none;
-    border-radius:10px;
-    background:#22c55e;
-    color:#fff;
-    font-size:18px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:.3s;
+width:100%;
+padding:15px;
+margin-top:12px;
+border:none;
+border-radius:10px;
+background:#3b82f6;
+color:white;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
 }
 
 button:hover{
-    background:#16a34a;
-    transform:scale(1.03);
+background:#2563eb;
+transform:scale(1.03);
 }
 
-a{
-    color:#38bdf8;
-    text-decoration:none;
+.wallet{
+margin-top:20px;
+padding:15px;
+background:#334155;
+border-radius:12px;
 }
 
-a:hover{
-    text-decoration:underline;
+#wallet{
+font-size:20px;
+font-weight:bold;
+color:#22c55e;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:20px;
+#clicks{
+color:#facc15;
 }
 
-th{
-    background:#22c55e;
-    padding:12px;
+#coins{
+color:#22c55e;
 }
 
-td{
-    background:#334155;
-    padding:12px;
-    text-align:center;
+#timer{
+color:#ef4444;
+font-size:24px;
+font-weight:bold;
+margin:15px 0;
+}
+
+#message{
+margin:15px 0;
+font-size:16px;
+font-weight:bold;
+color:#38bdf8;
+}
+/* ==========================
+   Style Part 3
+========================== */
+
+input:focus{
+border:2px solid #38bdf8;
+box-shadow:0 0 12px #38bdf8;
+}
+
+button:active{
+transform:scale(.96);
+}
+
+.container:hover{
+box-shadow:0 0 35px rgba(56,189,248,.35);
+transition:.3s;
+}
+
+hr{
+border:none;
+height:1px;
+background:#475569;
+margin:20px 0;
 }
 
 @media(max-width:600px){
-    .container{
-        width:95%;
-        padding:20px;
-    }
 
-    h1{
-        font-size:26px;
-    }
+.container{
+width:95%;
+padding:20px;
+}
 
-    button{
-        font-size:16px;
-    }
+h1{
+font-size:26px;
+}
+
+h2{
+font-size:20px;
+}
+
+button{
+font-size:16px;
+padding:14px;
+}
+
+input{
+font-size:16px;
+}
+
+}
+
+body{
+background:linear-gradient(135deg,#0f172a,#1e3a8a);
+}
+
+.wallet h3{
+margin-bottom:10px;
+color:#facc15;
+}
+
+#coins,
+#wallet{
+text-shadow:0 0 10px rgba(34,197,94,.5);
+}
+
+#clicks{
+text-shadow:0 0 10px rgba(250,204,21,.5);
+}
+
+#timer{
+text-shadow:0 0 10px rgba(239,68,68,.5);
 }

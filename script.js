@@ -1,71 +1,287 @@
-import { db } from "./firebase.js";
+// ==============================
+// ClickArena-M Script
+// Part 1
+// ==============================
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
 import {
-  collection,
-  addDoc
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-let clicks = Number(localStorage.getItem("clicks")) || 0;
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-document.getElementById("clicks").innerText = "Clicks: " + clicks;
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyDD2BOVpD3N_CrgBvHzng948KjIAwEKmCs",
+  authDomain: "clickarena-m.firebaseapp.com",
+  projectId: "clickarena-m",
+  storageBucket: "clickarena-m.firebasestorage.app",
+  messagingSenderId: "796812869774",
+  appId: "1:796812869774:web:1a704105fc33f3f13a89df",
+  measurementId: "G-TYZQB283H3"
+};
 
-async function clickGame() {
-    clicks++;
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    document.getElementById("clicks").innerText = "Clicks: " + clicks;
-
-    localStorage.setItem("clicks", clicks);
-
-    try {
-        await addDoc(collection(db, "clicks"), {
-            clicks: clicks,
-            time: new Date()
-        });
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-// 24-hour timer
+// Game Variables
+let currentUser = null;
+let clicks = 0;
+let coins = 0;
 let timeLeft = 24 * 60 * 60;
 
-function updateTimer() {
-    let hours = Math.floor(timeLeft / 3600);
-    let minutes = Math.floor((timeLeft % 3600) / 60);
-    let seconds = timeLeft % 60;
+// HTML Elements
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 
-    document.getElementById("timer").innerText =
-        "⏰ " +
-        String(hours).padStart(2, "0") + ":" +
-        String(minutes).padStart(2, "0") + ":" +
-        String(seconds).padStart(2, "0");
+const registerBtn = document.getElementById("registerBtn");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
-    if (timeLeft > 0) {
-        timeLeft--;
+const message = document.getElementById("message");
+
+const clicksText = document.getElementById("clicks");
+const coinsText = document.getElementById("coins");
+const timerText = document.getElementById("timer");
+// ==============================
+// Register User
+// ==============================
+
+if (registerBtn) {
+  registerBtn.addEventListener("click", async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+      message.innerText = "Please enter email and password";
+      return;
     }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      currentUser = userCredential.user;
+
+      await setDoc(doc(db, "users", currentUser.uid), {
+        email: email,
+        clicks: 0,
+        coins: 0,
+        createdAt: serverTimestamp()
+      });
+
+      message.innerText = "✅ Account created successfully";
+
+    } catch (error) {
+      message.innerText = error.message;
+    }
+  });
+}
+
+// ==============================
+// Login User
+// ==============================
+
+if (loginBtn) {
+  loginBtn.addEventListener("click", async () => {
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    try {
+
+      const userCredential =
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      currentUser = userCredential.user;
+
+      message.innerText = "✅ Login successful";
+
+    } catch (error) {
+
+      message.innerText = error.message;
+
+    }
+
+  });
+}
+
+// ==============================
+// Logout
+// ==============================
+
+if (logoutBtn) {
+
+  logoutBtn.addEventListener("click", async () => {
+
+    await signOut(auth);
+
+    location.reload();
+
+  });
+
+  }
+// ==============================
+// Auth State
+// ==============================
+
+onAuthStateChanged(auth, async (user) => {
+
+  if (!user) return;
+
+  currentUser = user;
+
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
+
+  if (snap.exists()) {
+    const data = snap.data();
+
+    clicks = data.clicks || 0;
+    coins = data.coins || 0;
+
+    if (clicksText) {
+      clicksText.innerText = "Clicks: " + clicks;
+    }
+
+    if (coinsText) {
+      coinsText.innerText = "Coins: " + coins;
+    }
+  }
+});
+
+// ==============================
+// Click Game
+// ==============================
+
+window.clickGame = async function () {
+
+  if (!currentUser) {
+    message.innerText = "Please login first";
+    return;
+  }
+
+  clicks++;
+  coins++;
+
+  if (clicksText) {
+    clicksText.innerText = "Clicks: " + clicks;
+  }
+
+  if (coinsText) {
+    coinsText.innerText = "Coins: " + coins;
+  }
+
+  await updateDoc(
+    doc(db, "users", currentUser.uid),
+    {
+      clicks: clicks,
+      coins: coins
+    }
+  );
+
+};
+// ==============================
+// Timer
+// ==============================
+
+function updateTimer() {
+
+  const hours = Math.floor(timeLeft / 3600);
+  const minutes = Math.floor((timeLeft % 3600) / 60);
+  const seconds = timeLeft % 60;
+
+  if (timerText) {
+    timerText.innerText =
+      "⏰ " +
+      String(hours).padStart(2, "0") + ":" +
+      String(minutes).padStart(2, "0") + ":" +
+      String(seconds).padStart(2, "0");
+  }
+
+  if (timeLeft > 0) {
+    timeLeft--;
+  }
+
 }
 
 updateTimer();
 setInterval(updateTimer, 1000);
-const registerBtn = document.getElementById("registerBtn");
 
-registerBtn.addEventListener("click", async () => {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+// ==============================
+// Daily Prize
+// ==============================
 
-    if (!email || !password) {
-        document.getElementById("message").innerText = "Enter email and password";
-        return;
+function claimDailyPrize() {
+
+  if (!currentUser) {
+    return;
+  }
+
+  coins += 100;
+
+  if (coinsText) {
+    coinsText.innerText = "Coins: " + coins;
+  }
+
+  updateDoc(
+    doc(db, "users", currentUser.uid),
+    {
+      coins: coins
     }
+  );
 
-    try {
-        await addDoc(collection(db, "users"), {
-            email: email,
-            password: password,
-            createdAt: new Date()
-        });
+}
 
-        document.getElementById("message").innerText = "Registered successfully!";
-    } catch (error) {
-        document.getElementById("message").innerText = error.message;
-    }
-});
+window.claimDailyPrize = claimDailyPrize;
+
+// ==============================
+// Auto Save
+// ==============================
+
+setInterval(async () => {
+
+  if (!currentUser) return;
+
+  try {
+
+    await updateDoc(
+      doc(db, "users", currentUser.uid),
+      {
+        clicks: clicks,
+        coins: coins
+      }
+    );
+
+  } catch (e) {
+    console.log(e);
+  }
+
+}, 10000);
+
+// ==============================
+// End
+// ==============================
+
+console.log("✅ ClickArena-M Loaded");

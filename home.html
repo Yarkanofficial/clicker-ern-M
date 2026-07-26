@@ -1,67 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClickArena M - Home</title>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Home - ClickArena M</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
 <div class="container">
-<div class="top-bar">
-    <div class="profile">
-        👤 <span id="playerName">Guest</span>
-    </div>
 
-    <div class="balance">
-        💰 $0.00
-    </div>
-</div>
+<h1>🏠 Home</h1>
 
-<div class="stats">
-    <div class="card">
-        <h3>🔥 Clicks</h3>
-        <p id="clickCount">0</p>
-    </div>
-
-    <div class="card">
-        <h3>🏆 Rank</h3>
-        <p>#999</p>
-    </div>
-
-    <div class="card">
-        <h3>👥 Online</h3>
-        <p>0</p>
-    </div>
-</div>
-<h1>🎮 ClickArena M</h1>
-
-<h2>Welcome Back 👋</h2>
-
-<p>Your personal dashboard</p>
+<p>Welcome Back 👋</p>
 
 <hr>
 
-<div class="card">
-  <h3>💰 Wallet</h3>
-  <p>$0.00</p>
-</div>
+<h2 id="playerEmail">
+Player
+</h2>
 
-<br>
+<h2 id="wallet">
+💰 Coins: 0
+</h2>
 
-<div class="card">
-  <h3>🎁 Daily Prize</h3>
-  <p>$0</p>
-</div>
-
-<br>
-
-<div class="card">
-  <h3>⏰ Daily Timer</h3>
-  <p id="dailyTimer">24:00:00</p>
-</div>
+<h2 id="rank">
+🏆 Rank: -
+</h2>
 
 <br>
 
@@ -76,16 +49,35 @@
 </button>
 
 <br><br>
+<button onclick="claimDailyPrize()">
+🎁 Daily Prize
+</button>
 
-<button onclick="location.href='login.html'">
+<br><br>
+
+<button id="logoutBtn">
 🚪 Logout
 </button>
-<script>
-const clicks = localStorage.getItem("clicks") || 0;
-document.getElementById("clickCount").innerText = clicks;
-</script>
 
-<script src="script.js"></script>
+<hr>
+
+<h3>📊 Game Stats</h3>
+
+<p id="totalClicks">
+Clicks: 0
+</p>
+
+<p id="totalCoins">
+Coins: 0
+</p>
+
+<p id="dailyStatus">
+Daily Prize: Ready
+</p>
+
+</div>
+
+<script type="module" src="script.js"></script>
 
 </body>
 </html>

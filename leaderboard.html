@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaderboard - ClickArena M</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🏆 Leaderboard</h1>
+
+<table border="1" style="margin:auto; border-collapse:collapse; width:80%;">
+<tr>
+<th>Rank</th>
+<th>Player</th>
+<th>Clicks</th>
+</tr>
+
+<tr>
+<td>1</td>
+<td>You</td>
+<td id="myScore">0</td>
+</tr>
+
+</table>
+
+<br>
+
+<button onclick="location.href='home.html'">
+🏠 Home
+</button>
+
+</div>
+
+<script>
+let clicks = localStorage.getItem("clicks") || 0;
+document.getElementById("myScore").innerText = clicks;
+</script>
+
+</body>
+</html>

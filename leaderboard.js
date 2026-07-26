@@ -38,13 +38,11 @@ async function loadLeaderboard() {
   let players = [];
 
   snapshot.forEach((doc) => {
-
-players.push({
-  email: doc.data().email || "Unknown",
-  coins: doc.data().coins || 0,
-  clicks: doc.data().clicks || 0
-});  
-
+    players.push({
+      email: doc.data().email || "Unknown",
+      coins: doc.data().coins || 0,
+      clicks: doc.data().clicks || 0
+    });
   });
 
   players.sort((a, b) => b.coins - a.coins);
@@ -52,13 +50,16 @@ players.push({
   leaderboardBody.innerHTML = "";
 
   players.forEach((player, index) => {
-
     leaderboardBody.innerHTML += `
       <tr>
         <td>${index + 1}</td>
         <td>${player.email}</td>
         <td>${player.coins}</td>
       </tr>
+    `;
+  });
+
+      }
     `;
 
   });

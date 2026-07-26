@@ -61,7 +61,6 @@ async function loadLeaderboard() {
 
 }
 
-loadLeaderboard();
 // ==============================
 // Leaderboard Part 3
 // ==============================

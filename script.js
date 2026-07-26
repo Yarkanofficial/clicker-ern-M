@@ -46,3 +46,26 @@ function updateTimer() {
 
 updateTimer();
 setInterval(updateTimer, 1000);
+const registerBtn = document.getElementById("registerBtn");
+
+registerBtn.addEventListener("click", async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+        document.getElementById("message").innerText = "Enter email and password";
+        return;
+    }
+
+    try {
+        await addDoc(collection(db, "users"), {
+            email: email,
+            password: password,
+            createdAt: new Date()
+        });
+
+        document.getElementById("message").innerText = "Registered successfully!";
+    } catch (error) {
+        document.getElementById("message").innerText = error.message;
+    }
+});

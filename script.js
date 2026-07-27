@@ -84,7 +84,7 @@ if (registerBtn) {
         email: email,
         clicks: 0,
         coins: 0,
-        timeleft: Date.now() + (24 * 60 * 60 * 1000),
+        timerEnd: Date.now() + (24 * 60 * 60 * 1000),
         createdAt: serverTimestamp()
       });
 

@@ -116,7 +116,25 @@ if (loginBtn) {
         );
 
       currentUser = userCredential.user;
+const userRef = doc(db, "users", currentUser.uid);
+const snap = await getDoc(userRef);
 
+if (snap.exists()) {
+    const data = snap.data();
+
+    coins = data.coins || 0;
+    clicks = data.clicks || 0;
+
+    if (data.timerEnd) {
+        timeLeft = Math.max(
+            0,
+            Math.floor((data.timerEnd - Date.now()) / 1000)
+        );
+    }
+
+    if (coinsText) coinsText.innerText = "Coins: " + coins;
+    if (clicksText) clicksText.innerText = "Clicks: " + clicks;
+}
       message.innerText = "✅ Login successful";
 
     } catch (error) {
@@ -263,9 +281,11 @@ async function claimDailyPrize() {
 
   await updateDoc(userRef, {
     coins: coins,
-    lastClaim: now
-  });
-
+    lastClaim: now,
+    timerEnd: now + (24 * 60 * 60 * 1000)
+});
+timeLeft = 24 * 60 * 60;
+updateTimer();
   message.innerText = "🎁 +100 Coins!";
 }
 

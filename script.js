@@ -173,23 +173,30 @@ onAuthStateChanged(auth, async (user) => {
 
   const userRef = doc(db, "users", user.uid);
   const snap = await getDoc(userRef);
-
-  if (snap.exists()) {
+if (snap.exists()) {
     const data = snap.data();
 
     clicks = data.clicks || 0;
     coins = data.coins || 0;
 
     if (clicksText) {
-      clicksText.innerText = "Clicks: " + clicks;
+        clicksText.innerText = "Clicks: " + clicks;
     }
 
     if (coinsText) {
-      coinsText.innerText = "Coins: " + coins;
+        coinsText.innerText = "Coins: " + coins;
     }
-  }
-});
 
+    if (data.timerEnd) {
+        timeLeft = Math.max(
+            0,
+            Math.floor((data.timerEnd - Date.now()) / 1000)
+        );
+    }
+}
+
+updateTimer();
+});
 // ==============================
 // Click Game
 // ==============================

@@ -260,12 +260,11 @@ if (timeLeft <= 0 && currentUser) {
         }
     });
 }
-}
 clearInterval(window.timerInterval);
 
 updateTimer();
 
-window.timerInterval = setInterval(() {
+window.timerInterval = setInterval(() => {
   updateTimer();
   }, 1000);
 // ==============================

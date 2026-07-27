@@ -232,10 +232,25 @@ setInterval(updateTimer, 1000);
 // ==============================
 // Daily Prize
 // ==============================
-
-function claimDailyPrize() {
+async function claimDailyPrize() {
 
   if (!currentUser) {
+    message.innerText = "Please login first";
+    return;
+  }
+
+  const userRef = doc(db, "users", currentUser.uid);
+  const snap = await getDoc(userRef);
+
+  const data = snap.data();
+
+  const now = Date.now();
+  const lastClaim = data.lastClaim || 0;
+
+  if (now - lastClaim < 24 * 60 * 60 * 1000) {
+
+    message.innerText = "⏰ Daily Prize is not ready yet.";
+
     return;
   }
 
@@ -245,15 +260,15 @@ function claimDailyPrize() {
     coinsText.innerText = "Coins: " + coins;
   }
 
-  updateDoc(
-    doc(db, "users", currentUser.uid),
-    {
-      coins: coins
-    }
-  );
+  await updateDoc(userRef, {
+    coins: coins,
+    lastClaim: now
+  });
 
+  message.innerText = "🎁 +100 Coins!";
 }
 
+window.claimDailyPrize = claimDailyPrize;
 window.claimDailyPrize = claimDailyPrize;
 
 // ==============================

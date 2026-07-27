@@ -260,13 +260,12 @@ if (timeLeft <= 0 && currentUser) {
         }
     });
 }
-clearInterval(window.timerInterval);
-
 updateTimer();
 
 window.timerInterval = setInterval(() => {
   updateTimer();
-  }, 1000);
+}, 1000);
+
 // ==============================
 // Daily Prize
 // ==============================
@@ -308,7 +307,7 @@ updateTimer();
   message.innerText = "🎁 +100 Coins!";
 }
 
-window.claimDailyPrize = claimDailyPrize;
+window.claimDailyPrize = claimDailyPrize;() {
 
 // ==============================
 // Auto Save

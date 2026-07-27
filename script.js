@@ -42,7 +42,7 @@ const db = getFirestore(app);
 let currentUser = null;
 let clicks = 0;
 let coins = 0;
-let timeLeft = 24 * 60 * 60;
+let timeLeft = 0;
 
 // HTML Elements
 const emailInput = document.getElementById("email");
@@ -249,12 +249,25 @@ function updateTimer() {
   if (timeLeft > 0) {
     timeLeft--;
   }
-
+if (timeLeft <= 0 && currentUser) {
+    getDoc(doc(db, "users", currentUser.uid)).then((snap) => {
+        if (snap.exists()) {
+            const data = snap.data();
+            timeLeft = Math.max(
+                0,
+                Math.floor((data.timerEnd - Date.now()) / 1000)
+            );
+        }
+    });
 }
+}
+clearInterval(window.timerInterval);
 
 updateTimer();
-setInterval(updateTimer, 1000);
 
+window.timerInterval = setInterval(() {
+  updateTimer();
+  }, 1000);
 // ==============================
 // Daily Prize
 // ==============================

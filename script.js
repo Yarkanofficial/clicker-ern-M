@@ -297,7 +297,6 @@ updateTimer();
 }
 
 window.claimDailyPrize = claimDailyPrize;
-window.claimDailyPrize = claimDailyPrize;
 
 // ==============================
 // Auto Save

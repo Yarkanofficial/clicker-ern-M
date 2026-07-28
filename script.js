@@ -1,12 +1,13 @@
 // ============================================
 // CLICK EARN - Complete Game Script
-// Version 1.0
+// Version 2.0 - FINAL FIXED
 // ============================================
 
 // ===== Configuration =====
 const CONFIG = {
     RESET_HOUR: 0,
-    REFERRAL_PERCENT: 5,
+    FREE_USER_COOLDOWN: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+    SUBSCRIBED_USER_COOLDOWN: 1000, // 1 second in milliseconds
 };
 
 // ===== App Data =====
@@ -61,6 +62,9 @@ function checkDailyReset() {
                 u.subscriptionEnd = u.subscriptionEnd || null;
                 u.referralCode = u.referralCode || generateReferralCode();
                 u.referredBy = u.referredBy || null;
+                u.lastClickTime = null;
+                u.coins = u.coins || 0;
+                u.freeClickUsed = false; // Reset free click status daily
             });
         }
         appData.globalClicks = 0;
@@ -108,6 +112,7 @@ function createUser(username, email, password) {
         email: email,
         password: password,
         balance: 0,
+        coins: 0,
         dailyClicks: 0,
         totalClicks: 0,
         isActive: false,
@@ -117,6 +122,7 @@ function createUser(username, email, password) {
         createdAt: new Date().toISOString(),
         rank: null,
         lastClickTime: null,
+        freeClickUsed: false, // Track if free user has clicked today
     };
     appData.users.push(newUser);
     saveData();
@@ -179,6 +185,7 @@ function updateUI() {
     updateWinners();
     updateUserRank();
     updateOffersVisibility();
+    updateUserStatus();
 }
 
 function updateTimer() {
@@ -247,37 +254,109 @@ function updateOffersVisibility() {
     offersSection.style.display = 'block';
 }
 
-// ===== Click Logic =====
-function handleClick() {
+function updateUserStatus() {
     const user = appData.currentUser;
     if (!user) return;
+    
+    const statusEl = document.getElementById('userStatus');
+    if (!statusEl) return;
+    
+    const isSubscribed = user.isActive && user.subscriptionEnd && new Date(user.subscriptionEnd) > new Date();
+    
+    if (isSubscribed) {
+        const end = new Date(user.subscriptionEnd);
+        const daysLeft = Math.ceil((end - new Date()) / (1000 * 60 * 60 * 24));
+        statusEl.textContent = `🟢 Subscribed (${daysLeft} days left)`;
+        statusEl.style.color = '#00b894';
+    } else {
+        statusEl.textContent = `🔴 Free User (1 click per 24h)`;
+        statusEl.style.color = '#e17055';
+    }
+}
+
+// ===== Click Logic (FIXED) =====
+function handleClick() {
+    const user = appData.currentUser;
+    if (!user) {
+        showToast('Please login first', 'error');
+        return;
+    }
 
     const now = new Date();
     const isSubscribed = user.isActive && user.subscriptionEnd && new Date(user.subscriptionEnd) > now;
     
-    if (!isSubscribed) {
-        const lastClickTime = user.lastClickTime ? new Date(user.lastClickTime) : null;
-        if (lastClickTime && (now - lastClickTime) < 24 * 60 * 60 * 1000) {
-            showToast('Free users can only click once every 24 hours', 'error');
-            return;
+    let canClick = false;
+    let message = '';
+    let cooldownTime = 0;
+    
+    if (isSubscribed) {
+        // SUBSCRIBED USER: Can click every 1 second
+        const lastClick = user.lastClickTime ? new Date(user.lastClickTime) : null;
+        if (!lastClick || (now - lastClick) >= CONFIG.SUBSCRIBED_USER_COOLDOWN) {
+            canClick = true;
+        } else {
+            const waitMs = CONFIG.SUBSCRIBED_USER_COOLDOWN - (now - lastClick);
+            const waitSec = Math.ceil(waitMs / 1000);
+            message = `⏳ Wait ${waitSec} second(s)`;
+            cooldownTime = waitMs;
         }
-        user.lastClickTime = now.toISOString();
-        user.dailyClicks = (user.dailyClicks || 0) + 1;
-        user.totalClicks = (user.totalClicks || 0) + 1;
     } else {
-        user.dailyClicks = (user.dailyClicks || 0) + 1;
-        user.totalClicks = (user.totalClicks || 0) + 1;
+        // FREE USER: Can click once every 24 hours
+        const lastClick = user.lastClickTime ? new Date(user.lastClickTime) : null;
+        if (!lastClick || (now - lastClick) >= CONFIG.FREE_USER_COOLDOWN) {
+            canClick = true;
+        } else {
+            const waitMs = CONFIG.FREE_USER_COOLDOWN - (now - lastClick);
+            const hoursLeft = Math.ceil(waitMs / (60 * 60 * 1000));
+            const minutesLeft = Math.ceil((waitMs % (60 * 60 * 1000)) / (60 * 1000));
+            message = `⏳ Free user: ${hoursLeft}h ${minutesLeft}m left`;
+            cooldownTime = waitMs;
+        }
     }
-
+    
+    if (!canClick) {
+        showToast(message, 'error');
+        return;
+    }
+    
+    // ===== EXECUTE CLICK =====
+    user.lastClickTime = now.toISOString();
+    user.dailyClicks = (user.dailyClicks || 0) + 1;
+    user.totalClicks = (user.totalClicks || 0) + 1;
+    user.coins = (user.coins || 0) + 1;
     appData.globalClicks = (appData.globalClicks || 0) + 1;
     
+    // Update UI
     document.getElementById('todayClicks').textContent = user.dailyClicks;
     document.getElementById('clickCount').textContent = user.dailyClicks;
     document.getElementById('globalClicks').textContent = appData.globalClicks;
     
+    // Animation
+    animateClick();
+    
+    // Calculate winners and rank
     calculateWinners();
     updateUserRank();
+    updateUserStatus();
     saveData();
+    
+    // Show success message
+    if (isSubscribed) {
+        showToast(`✅ +1 Click! (Subscriber) - Total: ${user.dailyClicks}`, 'success');
+    } else {
+        showToast(`✅ +1 Click! (Free) - Next click in 24h`, 'success');
+    }
+}
+
+// ===== Click Animation =====
+function animateClick() {
+    const circle = document.getElementById('clickCircle');
+    circle.style.transform = 'scale(0.85)';
+    circle.style.boxShadow = '0 0 60px rgba(108, 92, 231, 0.6)';
+    setTimeout(() => {
+        circle.style.transform = 'scale(1)';
+        circle.style.boxShadow = '0 0 40px rgba(108, 92, 231, 0.2)';
+    }, 150);
 }
 
 // ===== Calculate Winners =====
@@ -325,6 +404,7 @@ function subscribeToOffer(days, price) {
     user.subscriptionEnd = endDate.toISOString();
     user.subscriptionStart = now.toISOString();
     user.subscriptionDays = days;
+    user.lastClickTime = null; // Reset cooldown on subscription
     
     appData.transactions.push({
         type: 'subscription',
@@ -340,7 +420,7 @@ function subscribeToOffer(days, price) {
     updateUI();
     saveData();
     
-    return { success: true, message: 'Subscription successful!' };
+    return { success: true, message: `🎉 Subscribed for ${days} days!` };
 }
 
 // ===== Deposit / Withdraw =====
@@ -412,6 +492,7 @@ function showToast(message, type = 'info') {
         text-align: center;
         box-shadow: 0 8px 30px rgba(0,0,0,0.5);
         animation: fadeIn 0.3s ease;
+        font-size: 0.95rem;
     `;
     document.body.appendChild(toast);
     
@@ -419,7 +500,7 @@ function showToast(message, type = 'info') {
         toast.style.opacity = '0';
         toast.style.transition = 'opacity 0.5s';
         setTimeout(() => toast.remove(), 500);
-    }, 3000);
+    }, 4000);
 }
 
 // ===== Event Listeners =====
@@ -626,4 +707,25 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateWinners();
         updateUI();
     }, 30000);
+    
+    // ===== Add status element to HTML =====
+    addStatusElement();
 });
+
+// ===== Add status element to header =====
+function addStatusElement() {
+    const header = document.querySelector('.main-header');
+    if (header) {
+        const statusDiv = document.createElement('div');
+        statusDiv.id = 'userStatus';
+        statusDiv.style.cssText = `
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+        `;
+        statusDiv.textContent = '🔄 Loading...';
+        header.appendChild(statusDiv);
+    }
+}

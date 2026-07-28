@@ -6,7 +6,7 @@
 // ===== Configuration =====
 const CONFIG = {
     RESET_HOUR: 0,
-    SUBSCRIBED_BONUS: 2, // Subscribed users get 2 clicks per click
+    SUBSCRIBED_BONUS: 2,
 };
 
 // ===== App Data =====
@@ -264,7 +264,7 @@ function updateUserStatus() {
         statusEl.textContent = `⭐ Subscribed (${daysLeft}d left) - 2x clicks!`;
         statusEl.style.color = '#ffd700';
     } else {
-        statusEl.textContent = `🏃 Free User - Click as much as you want!`;
+        statusEl.textContent = `🏃 Free User - Unlimited clicks!`;
         statusEl.style.color = '#00cec9';
     }
 }
@@ -277,45 +277,35 @@ function handleClick() {
         return;
     }
 
-    const now = new Date();
-    const isSubscribed = user.isActive && user.subscriptionEnd && new Date(user.subscriptionEnd) > now;
-    
-    // ===== NO LIMIT FOR ANYONE! =====
-    // Free users can click unlimited times!
-    // Subscribed users get 2x clicks!
+    const isSubscribed = user.isActive && user.subscriptionEnd && new Date(user.subscriptionEnd) > new Date();
     
     let clickCount = 1;
     let message = '';
     
     if (isSubscribed) {
-        clickCount = CONFIG.SUBSCRIBED_BONUS; // 2 clicks per click
+        clickCount = CONFIG.SUBSCRIBED_BONUS;
         message = `⭐ +${clickCount} clicks (Subscriber bonus!)`;
     } else {
         clickCount = 1;
         message = `🏃 +1 click (Keep going!)`;
     }
     
-    // Execute click(s)
     user.dailyClicks = (user.dailyClicks || 0) + clickCount;
     user.totalClicks = (user.totalClicks || 0) + clickCount;
     user.coins = (user.coins || 0) + clickCount;
     appData.globalClicks = (appData.globalClicks || 0) + clickCount;
     
-    // Update UI
     document.getElementById('todayClicks').textContent = user.dailyClicks;
     document.getElementById('clickCount').textContent = user.dailyClicks;
     document.getElementById('globalClicks').textContent = appData.globalClicks;
     
-    // Animation (bigger effect for subscribed users)
     animateClick(isSubscribed);
     
-    // Calculate winners and rank
     calculateWinners();
     updateUserRank();
     updateUserStatus();
     saveData();
     
-    // Show success message
     showToast(message, 'success');
 }
 
@@ -328,7 +318,6 @@ function animateClick(isSubscribed) {
     circle.style.transform = `scale(${scale})`;
     circle.style.boxShadow = glow;
     
-    // Particle effect for subscribed users
     if (isSubscribed) {
         createParticles();
     }
@@ -525,7 +514,6 @@ function showToast(message, type = 'info') {
 document.addEventListener('DOMContentLoaded', function() {
     loadData();
     
-    // ===== Auth Tabs =====
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -541,7 +529,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // ===== Login =====
     document.getElementById('loginBtn').addEventListener('click', function() {
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value.trim();
@@ -563,7 +550,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // ===== Register =====
     document.getElementById('registerBtn').addEventListener('click', function() {
         const username = document.getElementById('regUsername').value.trim();
         const email = document.getElementById('regEmail').value.trim();
@@ -591,10 +577,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // ===== Click Circle =====
     document.getElementById('clickCircle').addEventListener('click', handleClick);
     
-    // ===== Modal Closes =====
     document.querySelectorAll('.modal-close').forEach(close => {
         close.addEventListener('click', function() {
             this.closest('.modal').classList.remove('show');
@@ -609,7 +593,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // ===== Offer Buttons =====
     document.querySelectorAll('.offer-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const card = this.closest('.offer-card');
@@ -625,7 +608,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // ===== Confirm Offer =====
     document.getElementById('confirmOffer').addEventListener('click', function() {
         const { days, price } = window._offerData || {};
         if (!days || !price) {
@@ -644,7 +626,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // ===== Deposit Button =====
     document.getElementById('depositBtn').addEventListener('click', function() {
         document.getElementById('depositAddress').textContent = 'TCKxV... (USDT TRC20)';
         showModal('depositModal');
@@ -671,7 +652,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // ===== Withdraw Button =====
     document.getElementById('withdrawBtn').addEventListener('click', function() {
         showModal('withdrawModal');
     });
@@ -702,7 +682,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // ===== Check if user already logged in =====
     if (appData.currentUser) {
         const user = appData.currentUser;
         if (user.isActive && user.subscriptionEnd) {
@@ -717,20 +696,16 @@ document.addEventListener('DOMContentLoaded', function() {
         updateUI();
     }
     
-    // ===== Timer Update =====
     setInterval(updateTimer, 1000);
     
-    // ===== Auto Refresh Winners =====
     setInterval(() => {
         calculateWinners();
         updateUI();
     }, 30000);
     
-    // ===== Add status element to header =====
     addStatusElement();
 });
 
-// ===== Add status element to header =====
 function addStatusElement() {
     const header = document.querySelector('.main-header');
     if (header) {
@@ -747,4 +722,4 @@ function addStatusElement() {
         statusDiv.textContent = '🔄 Loading...';
         header.appendChild(statusDiv);
     }
-          }
+}
